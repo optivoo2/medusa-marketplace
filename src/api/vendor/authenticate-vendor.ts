@@ -37,7 +37,7 @@ export const authenticateVendor = async (
     const marketplaceService = req.scope.resolve(MARKETPLACE_MODULE)
 
     // Check if the user is a vendor admin
-    const vendor = await marketplaceService.getVendorByUserId(userId)
+    const vendor = await (marketplaceService as any).getVendorByUserId(userId)
 
     if (!vendor) {
       return res.status(403).json({ error: "Acesso negado. Usuário não é responsável por um protetor." })

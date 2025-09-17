@@ -125,7 +125,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
         variants: [
           {
             title: "Adoção",
-            options: [],
+            options: {},
             manage_inventory: false,
             allow_backorder: false,
             // No pricing - adoption is free

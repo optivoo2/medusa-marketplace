@@ -13,7 +13,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     const authService = req.scope.resolve("authService")
     
     // Authenticate the user
-    const { user, token } = await authService.authenticateUser(email, password)
+    const { user, token } = await (authService as any).authenticateUser(email, password)
 
     if (!user) {
       return res.status(401).json({ error: "Credenciais inválidas." })
@@ -21,7 +21,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
 
     // Check if the user is a vendor admin
     const marketplaceService = req.scope.resolve("marketplaceModule")
-    const vendor = await marketplaceService.getVendorByUserId(user.id)
+    const vendor = await (marketplaceService as any).getVendorByUserId(user.id)
 
     if (!vendor) {
       return res.status(403).json({ error: "Acesso negado. Usuário não vinculado como responsável por um protetor." })

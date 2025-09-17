@@ -43,7 +43,7 @@ export const antiSaleMiddleware = async (
         const adoptionCategory = await productModule.listProductCategories({ handle: "adocao" })
         const adoptionCategoryId = adoptionCategory?.[0]?.id
         const products = adoptionCategoryId
-          ? await productModule.listProducts({ id: productIds, categories: [adoptionCategoryId] })
+          ? await productModule.listProducts({ id: productIds, categories: { id: [adoptionCategoryId] } })
           : []
         
         if (products.length > 0) {

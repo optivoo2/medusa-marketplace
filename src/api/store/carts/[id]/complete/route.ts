@@ -20,7 +20,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       const adoptionCategory = await productModule.listProductCategories({ handle: "adocao" })
       const adoptionCategoryId = adoptionCategory?.[0]?.id
       const adoptionProducts = adoptionCategoryId
-        ? await productModule.listProducts({ id: productIds, categories: [adoptionCategoryId] })
+        ? await productModule.listProducts({ id: productIds, categories: { id: [adoptionCategoryId] } })
         : []
       
       if (adoptionProducts.length > 0) {

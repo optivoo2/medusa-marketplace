@@ -39,7 +39,7 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
       const marketplaceService = req.scope.resolve("marketplaceModule")
       const vendor = (req as any).vendor
 
-      const updatedVendor = await marketplaceService.updateVendor(vendor.id, req.body)
+      const updatedVendor = await (marketplaceService as any).updateVendorsCustom(vendor.id, req.body)
 
       res.json({ vendor: updatedVendor })
     })

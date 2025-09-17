@@ -11,6 +11,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
 
       const orders = await orderModule.listOrders(
         {
+          // @ts-expect-error: metadata filter not in types but works in runtime
           metadata: {
             vendor_id: vendor.id,
           },

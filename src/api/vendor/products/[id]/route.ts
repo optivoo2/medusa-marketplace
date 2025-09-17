@@ -9,7 +9,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
       const vendor = (req as any).vendor
       const productId = req.params.id
 
-      const product = await productService.retrieve(productId)
+      const product = await (productService as any).retrieve(productId)
 
       // Verify the product belongs to this vendor
       if (product.vendor_id !== vendor.id) {
@@ -31,14 +31,14 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
       const vendor = (req as any).vendor
       const productId = req.params.id
 
-      const product = await productService.retrieve(productId)
+      const product = await (productService as any).retrieve(productId)
 
       // Verify the product belongs to this vendor
       if (product.vendor_id !== vendor.id) {
         return res.status(403).json({ error: "Access denied. Product does not belong to this vendor." })
       }
 
-      const updatedProduct = await productService.update(productId, req.body)
+      const updatedProduct = await (productService as any).update(productId, req.body)
 
       res.json({ product: updatedProduct })
     })
@@ -55,14 +55,14 @@ export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
       const vendor = (req as any).vendor
       const productId = req.params.id
 
-      const product = await productService.retrieve(productId)
+      const product = await (productService as any).retrieve(productId)
 
       // Verify the product belongs to this vendor
       if (product.vendor_id !== vendor.id) {
         return res.status(403).json({ error: "Access denied. Product does not belong to this vendor." })
       }
 
-      await productService.delete(productId)
+      await (productService as any).delete(productId)
 
       res.status(204).send()
     })

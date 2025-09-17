@@ -21,7 +21,7 @@ export const preventAdoptionProductPurchase = async (
           if (item.variant_id) {
             // Get the product for this variant
             const variant = await productModule.retrieveProductVariant(item.variant_id)
-            const product = await productModule.retrieveProduct(variant.product_id)
+            const product = await productModule.retrieveProduct(variant.product_id!)
             
             // Check if this is an adoption product
             if (product.metadata?.adoption === true) {
@@ -39,7 +39,7 @@ export const preventAdoptionProductPurchase = async (
     if (req.method === "POST" && req.url?.includes("/products/") && req.url?.includes("/purchase")) {
       const productId = req.params?.id
       if (productId) {
-        const product = await productModule.retrieveProduct(productId)
+        const product = await productModule.retrieveProduct(productId as string)
         if (product.metadata?.adoption === true) {
           return res.status(400).json({
             error: "Produtos de adoção não podem ser comprados. Entre em contato diretamente com o responsável.",
@@ -73,7 +73,7 @@ export const preventAdoptionProductPricing = async (
       const productId = req.params?.id || req.query?.product_id
       
       if (productId) {
-        const product = await productModule.retrieveProduct(productId)
+        const product = await productModule.retrieveProduct(productId as string)
         if (product.metadata?.adoption === true) {
           return res.status(400).json({
             error: "Produtos de adoção não possuem preço. Entre em contato diretamente com o responsável.",
