@@ -116,38 +116,36 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       searchable_text: `${title} ${description} ${species} ${breed} ${city} ${state}`.toLowerCase(),
     }
 
-    const [product] = await productModule.createProducts([
-      {
-        title,
-        description,
-        images: images.map((url: string) => ({ url })),
-        // Single variant for adoption (not purchasable)
-        variants: [
-          {
-            title: "Adoção",
-            options: {},
-            manage_inventory: false,
-            allow_backorder: false,
-            // No pricing - adoption is free
-          },
-        ],
-        // @ts-expect-error: tags not in types but works in runtime
-        tags: [
-          { value: "adocao" },
-          { value: species.toLowerCase() },
-          ...(breed ? [{ value: breed.toLowerCase() }] : []),
-          { value: age.toLowerCase() },
-          { value: size.toLowerCase() },
-          { value: city.toLowerCase() },
-          { value: state.toLowerCase() },
-          ...tags
-        ].filter(Boolean),
-        categories: [adoptionCategory[0].id, ...categories],
-        metadata: petMetadata,
-        // Ensure product is published and visible
-        status: "published",
-      },
-    ])
+    const [product] = await productModule.createProducts([{
+      title,
+      description,
+      images: images.map((url: string) => ({ url })),
+      // Single variant for adoption (not purchasable)
+      variants: [
+        {
+          title: "Adoção",
+          options: {},
+          manage_inventory: false,
+          allow_backorder: false,
+          // No pricing - adoption is free
+        },
+      ],
+      // @ts-expect-error: tags not in types but works in runtime
+      tags: [
+        { value: "adocao" },
+        { value: species.toLowerCase() },
+        ...(breed ? [{ value: breed.toLowerCase() }] : []),
+        { value: age.toLowerCase() },
+        { value: size.toLowerCase() },
+        { value: city.toLowerCase() },
+        { value: state.toLowerCase() },
+        ...tags
+      ].filter(Boolean),
+      categories: [adoptionCategory[0].id, ...categories],
+      metadata: petMetadata,
+      // Ensure product is published and visible
+      status: "published",
+    }] as any)
 
     res.status(201).json({ 
       product,

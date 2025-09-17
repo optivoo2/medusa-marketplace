@@ -88,7 +88,6 @@ export const splitOrderByVendorWorkflow = createWorkflow(
 
           // Complete the cart to create an order
           const order = await orderService.createOrders([{
-            // @ts-expect-error: cart_id not in types but works in runtime
             cart_id: newCart[0].id
           }] as any)
 
