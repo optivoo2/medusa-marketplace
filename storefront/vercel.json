@@ -6,8 +6,10 @@
   "devCommand": "npm run dev",
   "env": {
     "NEXT_PUBLIC_MEDUSA_BACKEND_URL": "https://api.petrescue.org.br",
+    "MEDUSA_BACKEND_URL": "https://api.petrescue.org.br",
     "NEXT_PUBLIC_BASE_URL": "https://app.petrescue.org.br",
-    "NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY": "pk_live_petrescue_brasil"
+    "NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY": "pk_live_petrescue_brasil",
+    "NEXT_PUBLIC_DEFAULT_REGION": "br"
   },
   "headers": [
     {
