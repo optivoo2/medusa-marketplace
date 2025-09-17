@@ -15,8 +15,8 @@ const exporter = new OTLPTraceExporter({
 })
 
 export function register() {
-  // Only enable instrumentation in production or when explicitly requested
-  if (process.env.NODE_ENV === "production" || process.env.ENABLE_INSTRUMENTATION === "true") {
+  // Opt-in only: require explicit ENABLE_INSTRUMENTATION=true to avoid missing deps in prod
+  if (process.env.ENABLE_INSTRUMENTATION === "true") {
     registerOtel({
       serviceName: process.env.OTEL_SERVICE_NAME || "petrescue-brasil-backend",
       exporter,

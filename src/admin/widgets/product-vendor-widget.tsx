@@ -1,5 +1,6 @@
 import React from "react"
 import { Container, Heading, Text, Badge } from "@medusajs/ui"
+import { defineWidgetConfig } from "@medusajs/admin-sdk"
 
 interface ProductVendorWidgetProps {
   product: {
@@ -13,7 +14,7 @@ interface ProductVendorWidgetProps {
   }
 }
 
-export const ProductVendorWidget: React.FC<ProductVendorWidgetProps> = ({ product }) => {
+const ProductVendorWidget: React.FC<ProductVendorWidgetProps> = ({ product }) => {
   if (!product.vendor) {
     return (
       <Container className="p-4">
@@ -52,5 +53,10 @@ export const ProductVendorWidget: React.FC<ProductVendorWidgetProps> = ({ produc
     </Container>
   )
 }
+
+// The widget's configurations
+export const config = defineWidgetConfig({
+  zone: "product.details.after",
+})
 
 export default ProductVendorWidget

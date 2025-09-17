@@ -1,4 +1,5 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework"
+import { resolveMarketplaceService } from "../../../modules/marketplace"
 
 // POST /vendor/auth/login - Vendor login
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
@@ -20,8 +21,8 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     }
 
     // Check if the user is a vendor admin
-    const marketplaceService = req.scope.resolve("marketplaceModule")
-    const vendor = await (marketplaceService as any).getVendorByUserId(user.id)
+    const marketplaceService = resolveMarketplaceService(req.scope)
+    const vendor = await marketplaceService.getVendorByUserId(user.id)
 
     if (!vendor) {
       return res.status(403).json({ error: "Acesso negado. Usuário não vinculado como responsável por um protetor." })

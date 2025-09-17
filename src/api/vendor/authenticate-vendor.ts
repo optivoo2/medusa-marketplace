@@ -1,5 +1,5 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
-import { MARKETPLACE_MODULE } from "../../modules/marketplace"
+import { resolveMarketplaceService } from "../../modules/marketplace"
 import jwt from "jsonwebtoken"
 
 export const authenticateVendor = async (
@@ -34,10 +34,10 @@ export const authenticateVendor = async (
     }
 
     // Get the marketplace module service
-    const marketplaceService = req.scope.resolve(MARKETPLACE_MODULE)
+    const marketplaceService = resolveMarketplaceService(req.scope)
 
     // Check if the user is a vendor admin
-    const vendor = await (marketplaceService as any).getVendorByUserId(userId)
+    const vendor = await marketplaceService.getVendorByUserId(userId)
 
     if (!vendor) {
       return res.status(403).json({ error: "Acesso negado. Usuário não é responsável por um protetor." })

@@ -66,7 +66,11 @@ docker run -d -p 9000:9000 --env-file .env.production petrescue-brasil
 
 ### Backend (.env.production)
 ```bash
-DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
+DATABASE_URL=postgresql://username:password@host:port/database
+DATABASE_SSL=true
+DATABASE_SSL_REJECT_UNAUTHORIZED=false
+# Optional CA (PEM or base64)
+# DATABASE_SSL_CA=-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----
 JWT_SECRET=your-super-secure-jwt-secret-here-32-chars-minimum
 COOKIE_SECRET=your-super-secure-cookie-secret-here-32-chars-minimum
 REVALIDATE_SECRET=your-super-secure-revalidate-secret-here-32-chars-minimum
@@ -78,9 +82,12 @@ NODE_ENV=production
 
 ### Storefront (.env.production)
 ```bash
+MEDUSA_BACKEND_URL=https://api.petrescue.org.br
 NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.petrescue.org.br
 NEXT_PUBLIC_BASE_URL=https://app.petrescue.org.br
 ```
+
+> O TLS para PostgreSQL será ativado automaticamente quando o app detectar as variáveis `RAILWAY_*`, mas mantenha os flags na configuração para maior clareza.
 
 ## 🧪 Post-Deployment Validation
 

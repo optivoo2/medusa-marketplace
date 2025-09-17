@@ -35,7 +35,7 @@ print_step() {
 check_env_vars() {
     print_step "Checking environment variables..."
     
-    required_vars=("DATABASE_URL" "JWT_SECRET" "COOKIE_SECRET" "STORE_CORS" "ADMIN_CORS" "AUTH_CORS")
+    required_vars=("DATABASE_URL" "JWT_SECRET" "COOKIE_SECRET" "STORE_CORS" "ADMIN_CORS" "AUTH_CORS" "REDIS_URL" "MEDUSA_BACKEND_URL")
     
     for var in "${required_vars[@]}"; do
         if [ -z "${!var}" ]; then
@@ -62,7 +62,7 @@ check_env_vars() {
 # Install dependencies
 install_dependencies() {
     print_step "Installing dependencies..."
-    npm ci --production=false
+    npm install --omit=dev --legacy-peer-deps
     print_status "Dependencies installed ✓"
 }
 
@@ -94,6 +94,11 @@ STORE_CORS=${STORE_CORS}
 ADMIN_CORS=${ADMIN_CORS}
 AUTH_CORS=${AUTH_CORS}
 NODE_ENV=production
+PORT=${PORT:-9000}
+MEDUSA_BACKEND_URL=${MEDUSA_BACKEND_URL}
+MEDUSA_WORKER_MODE=${MEDUSA_WORKER_MODE:-server}
+MEDUSA_ADMIN_ONBOARDING_TYPE=${MEDUSA_ADMIN_ONBOARDING_TYPE:-default}
+${MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIR:+MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIR=${MEDUSA_ADMIN_ONBOARDING_NEXTJS_DIR}}
 ${REDIS_URL:+REDIS_URL=${REDIS_URL}}
 ${OTEL_EXPORTER_OTLP_ENDPOINT:+OTEL_EXPORTER_OTLP_ENDPOINT=${OTEL_EXPORTER_OTLP_ENDPOINT}}
 ${OTEL_SERVICE_NAME:+OTEL_SERVICE_NAME=${OTEL_SERVICE_NAME}}

@@ -1,0 +1,56 @@
+---
+globs: "src/**/*.ts,src/**/*.tsx"
+description: "Medusa framework best practices and patterns"
+---
+
+# Medusa Framework Guidelines
+
+## Module Development
+- Modules should be self-contained in [src/modules](mdc:src/modules)
+- Export services, models, and workflows from module index
+- Use dependency injection via Medusa's container system
+
+## Service Pattern
+```typescript
+// Services extend MedusaService with models
+export default class VendorService extends MedusaService({
+  Vendor,
+  VendorAdmin,
+  Report,
+}) {
+  // Service methods follow CRUD patterns
+  async createVendor(data: CreateVendorInput): Promise<Vendor> {
+    return await this.create(Vendor, data)
+  }
+}
+```
+
+## Model Definition
+- Models use MikroORM decorators
+- Follow Medusa's entity patterns
+- Include proper relationships and indexes
+
+## API Routes Structure
+- Store routes: [src/api/store](mdc:src/api/store) - Public-facing APIs
+- Admin routes: [src/api/admin](mdc:src/api/admin) - Admin panel APIs  
+- Vendor routes: [src/api/vendor](mdc:src/api/vendor) - Vendor-specific APIs
+
+## Workflow Usage
+- Use workflows for complex business logic
+- Keep workflows focused and composable
+- Handle errors gracefully in workflow steps
+
+## Event Handling
+- Use subscribers for event-driven logic
+- Place in [src/subscribers](mdc:src/subscribers)
+- Follow Medusa's event naming conventions
+
+## Configuration
+- Environment validation in [medusa-config.ts](mdc:medusa-config.ts)
+- Module registration follows Medusa patterns
+- Links configuration for custom relationships
+
+## Testing
+- Unit tests for services and utilities
+- Integration tests for API endpoints
+- Use Medusa's test utilities when available

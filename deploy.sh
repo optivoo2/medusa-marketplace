@@ -30,7 +30,7 @@ print_error() {
 check_env_vars() {
     print_status "Checking environment variables..."
     
-    required_vars=("DATABASE_URL" "JWT_SECRET" "COOKIE_SECRET" "STORE_CORS" "ADMIN_CORS" "AUTH_CORS")
+    required_vars=("DATABASE_URL" "JWT_SECRET" "COOKIE_SECRET" "STORE_CORS" "ADMIN_CORS" "AUTH_CORS" "REDIS_URL" "MEDUSA_BACKEND_URL")
     
     for var in "${required_vars[@]}"; do
         if [ -z "${!var}" ]; then
@@ -56,7 +56,7 @@ check_env_vars() {
 # Install dependencies
 install_dependencies() {
     print_status "Installing dependencies..."
-    npm ci --production=false
+    npm install --omit=dev --legacy-peer-deps
     print_status "Dependencies installed ✓"
 }
 

@@ -1,143 +1,239 @@
-# Railway Deployment Guide for MedusaJS Marketplace
+# Railway Deployment Guide for Medusa Marketplace
+
+This guide covers deploying the PetRescue Brasil marketplace to Railway with both backend and storefront services.
 
 ## Prerequisites
-1. Railway account (sign up at https://railway.app)
-2. GitHub repository with your code
 
-## Step 1: Create Railway Project
+- Node.js 20+ installed locally
+- Railway CLI installed and authenticated
+- PostgreSQL and Redis databases provisioned in Railway
 
-### Option A: Using Railway Web Interface (Recommended)
-1. Go to https://railway.app
-2. Click "New Project"
-3. Select "Deploy from GitHub repo"
-4. Choose your `medusa-marketplace` repository
-5. Railway will automatically detect it's a Node.js project
+## Project Structure
 
-### Option B: Using Railway CLI
-```bash
-# Login to Railway (requires interactive browser)
-npx @railway/cli@latest login
-
-# Create new project
-npx @railway/cli@latest init
-
-# Link to existing project
-npx @railway/cli@latest link
+```
+medusa-marketplace/
+├── src/                    # Backend Medusa application
+├── storefront/            # Next.js storefront
+├── scripts/               # Deployment helper scripts
+├── railway.json          # Backend Railway config
+├── nixpacks.toml         # Backend build config
+└── RAILWAY_DEPLOYMENT.md  # This guide
 ```
 
-## Step 2: Add PostgreSQL Database
-1. In your Railway project dashboard
-2. Click "New" → "Database" → "PostgreSQL"
-3. Railway will automatically create a PostgreSQL instance
-4. Note the connection details (will be available as `DATABASE_URL`)
+## Phase 1: Environment Setup
 
-## Step 3: Add Redis Database
-1. In your Railway project dashboard
-2. Click "New" → "Database" → "Redis"
-3. Railway will automatically create a Redis instance
-4. Note the connection details (will be available as `REDIS_URL`)
+### 1.1 Generate Production Secrets
 
-## Step 4: Configure Environment Variables
+```bash
+# Generate secure secrets
+node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(64).toString('hex'))"
+node -e "console.log('COOKIE_SECRET=' + require('crypto').randomBytes(64).toString('hex'))"
+node -e "console.log('REVALIDATE_SECRET=' + require('crypto').randomBytes(32).toString('hex'))"
+```
 
-Set these environment variables in your Railway project:
+### 1.2 Provision Railway Services
 
-### Required Variables
+1. **Create Railway Project**: `railway login && railway init`
+2. **Add PostgreSQL Plugin**: `railway add postgresql`
+3. **Add Redis Plugin**: `railway add redis`
+4. **Note connection strings** for environment variables
+
+### 1.3 Backend Environment Variables
+
+Set these in Railway backend service:
+
 ```bash
 # Database
-DATABASE_URL=${{Postgres.DATABASE_PUBLIC_URL}}
-REDIS_URL=${{Redis.REDIS_PUBLIC_URL}}
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+# Opcional: o backend já habilita TLS automaticamente em ambientes Railway, mas manter explícito ajuda na documentação.
+DATABASE_SSL=true
+DATABASE_SSL_REJECT_UNAUTHORIZED=false  # Default is false unless you provide a valid CA
 
-# Security (Generate secure secrets!)
-JWT_SECRET=your-super-secure-jwt-secret-here
-COOKIE_SECRET=your-super-secure-cookie-secret-here
+# Optional: Provide CA material if your provider shares it
+# DATABASE_SSL_CA=-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----
 
-# CORS (Update with your actual URLs after deployment)
-STORE_CORS=https://your-storefront-url.com
-ADMIN_CORS=https://your-admin-url.com
-AUTH_CORS=https://your-storefront-url.com,https://your-admin-url.com
+# Redis
+REDIS_URL=${{Redis.REDIS_URL}}
+
+# CORS (update with your actual domains)
+STORE_CORS=https://your-storefront.railway.app
+ADMIN_CORS=https://your-backend.railway.app
+AUTH_CORS=https://your-backend.railway.app
+
+# Security (use generated secrets)
+JWT_SECRET=your-generated-jwt-secret
+COOKIE_SECRET=your-generated-cookie-secret
 
 # Medusa Configuration
+MEDUSA_BACKEND_URL=https://your-backend.railway.app
 MEDUSA_WORKER_MODE=server
-DISABLE_MEDUSA_ADMIN=false
 PORT=9000
-
-# Backend URL (Update after deployment)
-MEDUSA_BACKEND_URL=https://your-railway-app-url.railway.app
 ```
 
-### How to Set Environment Variables in Railway:
-1. Go to your project dashboard
-2. Click on your service
-3. Go to "Variables" tab
-4. Add each variable with its value
+> Opcional: se o provedor disponibilizar o certificado CA, defina `DATABASE_SSL_CA` com o conteúdo PEM ou em base64.
 
-## Step 5: Deploy
+> Observação: se você não definir `DATABASE_SSL`, o backend ativa TLS automaticamente quando detecta variáveis `RAILWAY_*`.
 
-Railway will automatically deploy when you push to your main branch, or you can trigger a manual deployment.
+## Phase 2: Backend Deployment
 
-## Step 6: Post-Deployment Configuration
-
-After deployment, update these environment variables with your actual Railway app URL:
+### 2.1 Deploy Backend Service
 
 ```bash
-# Get your Railway app URL from the dashboard
-MEDUSA_BACKEND_URL=https://your-actual-railway-url.railway.app
-
-# Update CORS settings
-STORE_CORS=https://your-storefront-url.com
-ADMIN_CORS=https://your-railway-url.railway.app
-AUTH_CORS=https://your-storefront-url.com,https://your-railway-url.railway.app
+# From project root
+railway up
 ```
 
-## Step 7: Create Admin User
+### 2.2 Post-Deploy Setup
 
-After deployment, create an admin user:
+After successful deployment, run:
 
 ```bash
-# Using Railway CLI
-npx @railway/cli@latest run npx medusa user --email admin@yourdomain.com --password your-secure-password
+# Create admin user and API key
+railway run node scripts/create-admin-and-api-key.js
 
-# Or using Railway web interface
-# Go to your service → "Deployments" → "View Logs" → "Run Command"
+# Get the publishable key for storefront
+railway run node scripts/get-api-key.js
 ```
 
-## Step 8: Test Your Deployment
+### 2.3 Verify Backend
 
-1. **Health Check**: `https://your-railway-url.railway.app/health`
-2. **Admin Dashboard**: `https://your-railway-url.railway.app/app`
-3. **Store API**: `https://your-railway-url.railway.app/store/products`
+Test these endpoints:
+- `GET /health` - Health check
+- `GET /store/products` - Store API
+- `GET /admin` - Admin interface
+
+## Phase 3: Storefront Deployment
+
+### 3.1 Create Storefront Service
+
+```bash
+# Create new service for storefront
+railway service create storefront
+```
+
+### 3.2 Set Storefront Environment Variables
+
+```bash
+# Backend URLs
+MEDUSA_BACKEND_URL=https://your-backend.railway.app
+NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://your-backend.railway.app
+
+# API Key (from step 2.2)
+NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_your_key_here
+
+# Storefront Configuration
+NEXT_PUBLIC_BASE_URL=https://your-storefront.railway.app
+NEXT_PUBLIC_DEFAULT_REGION=br
+REVALIDATE_SECRET=your-generated-revalidate-secret
+PORT=8000
+```
+
+### 3.3 Deploy Storefront
+
+```bash
+# Set build path to storefront directory
+railway service connect storefront
+railway variables set RAILWAY_REPO_PATH=storefront
+railway up
+```
+
+## Phase 4: Verification & Testing
+
+### 4.1 Smoke Tests
+
+1. **Backend Health**: `curl https://your-backend.railway.app/health`
+2. **Storefront**: Visit `https://your-storefront.railway.app`
+3. **Admin Login**: Visit `https://your-backend.railway.app/admin`
+4. **API Integration**: Verify storefront can fetch products
+
+### 4.2 Environment Validation
+
+```bash
+# Backend validation
+railway run node scripts/pre-start.js
+
+# Storefront validation
+railway run --service storefront node scripts/check-env-variables.js
+```
+
+## Phase 5: Production Hardening
+
+### 5.1 Security Checklist
+
+- [ ] All secrets are strong and unique
+- [ ] CORS origins are properly configured
+- [ ] HTTPS is enforced (Railway default)
+- [ ] Admin password is changed from default
+
+### 5.2 Monitoring Setup
+
+- Enable Railway metrics and logs
+- Set up health check monitoring
+- Configure error alerting
+
+### 5.3 Backup Strategy
+
+- Railway provides automatic PostgreSQL backups
+- Document recovery procedures
+- Test backup restoration
 
 ## Troubleshooting
 
-### Common Issues:
-1. **Build Failures**: Check that all dependencies are in `package.json`
-2. **Database Connection**: Verify `DATABASE_URL` is correctly set
-3. **CORS Errors**: Ensure CORS URLs match your actual deployed URLs
-4. **Admin Not Loading**: Check `MEDUSA_BACKEND_URL` and `ADMIN_CORS`
+### Common Issues
 
-### View Logs:
+1. **Redis Connection Failed**
+   - Verify REDIS_URL format
+   - Check Redis plugin is attached
+
+2. **CORS Errors**
+   - Update CORS origins with actual domains
+   - Ensure both HTTP and HTTPS are covered
+
+3. **Storefront Can't Connect to Backend**
+   - Verify MEDUSA_BACKEND_URL is correct
+   - Check publishable key is valid
+   - Ensure backend is running
+
+4. **Migration Failures**
+   - Check DATABASE_URL format
+   - Verify database permissions
+   - Run migrations manually if needed
+
+### Debug Commands
+
 ```bash
-npx @railway/cli@latest logs
+# Check backend logs
+railway logs
+
+# Check storefront logs
+railway logs --service storefront
+
+# Run pre-start validation
+railway run node scripts/pre-start.js
+
+# Test database connection
+railway run npx medusa db:migrate
 ```
 
-## Production Considerations
+## Maintenance
 
-1. **Security**: Use strong, randomly generated secrets
-2. **Monitoring**: Set up Railway's built-in monitoring
-3. **Backups**: Railway handles database backups automatically
-4. **Scaling**: Railway can auto-scale based on traffic
+### Regular Tasks
 
-## Cost Estimation
+1. **Security Updates**: Keep dependencies updated
+2. **Secret Rotation**: Rotate JWT_SECRET and COOKIE_SECRET periodically
+3. **Database Maintenance**: Monitor PostgreSQL performance
+4. **Backup Verification**: Test restore procedures
 
-Railway pricing is based on usage:
-- **Hobby Plan**: $5/month + usage
-- **Pro Plan**: $20/month + usage
-- **Database**: Included in plans
-- **Bandwidth**: Pay per GB
+### Scaling Considerations
 
-## Next Steps
+- Railway auto-scales based on traffic
+- Consider Redis clustering for high traffic
+- Monitor database connection limits
+- Set up proper logging and monitoring
 
-1. Set up a custom domain (optional)
-2. Configure SSL certificates (automatic with Railway)
-3. Set up monitoring and alerts
-4. Configure CI/CD for automatic deployments
+## Support
+
+For issues specific to this deployment:
+1. Check Railway documentation
+2. Review Medusa v2 deployment guides
+3. Consult project-specific troubleshooting in this guide

@@ -16,8 +16,11 @@
     "build": "medusa build",
     "seed": "medusa exec ./src/scripts/seed.ts",
     "seed:petrescue": "medusa exec ./src/scripts/seed-petrescue.ts",
-    "start": "medusa start",
+    "prestart": "node scripts/pre-start.js",
+    "start": "npm run build && medusa start",
     "dev": "medusa develop",
+    "install:prod": "npm install --omit=dev --legacy-peer-deps",
+    "migrate": "npx medusa db:migrate",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
     "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
     "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
@@ -25,7 +28,10 @@
     "vercel:deploy": "node advanced-deploy.js deploy",
     "vercel:status": "node advanced-deploy.js status",
     "vercel:list": "node advanced-deploy.js list",
-    "vercel:setup": "npm run vercel:auth"
+    "vercel:setup": "npm run vercel:auth",
+    "railway:deploy": "node scripts/deploy-to-railway.js",
+    "railway:setup-admin": "railway run node scripts/create-admin-and-api-key.js",
+    "railway:get-key": "railway run node scripts/get-api-key.js"
   },
   "dependencies": {
     "@medusajs/admin-sdk": "2.10.2",
@@ -45,6 +51,7 @@
     "date-fns": "^4.1.0",
     "mcp-handler": "^1.0.2",
     "pg": "^8.13.0",
+    "redis": "^4.6.0",
     "zod": "^4.1.8"
   },
   "devDependencies": {

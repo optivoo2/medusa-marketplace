@@ -1,0 +1,47 @@
+---
+alwaysApply: true
+description: "Medusa Marketplace Project Structure Guide"
+---
+
+# Medusa Marketplace Project Structure
+
+This is a **PetRescue Brasil** marketplace built on Medusa v2 framework for pet adoption platform.
+
+## Core Architecture
+- **Backend**: Medusa v2 with custom marketplace module
+- **Storefront**: Next.js 15 (app router) in Portuguese (pt-BR)
+- **Vendor Dashboard**: React + Vite for pet protector management
+- **Database**: PostgreSQL 17 with Redis for caching
+
+## Key Directories
+
+### Backend Structure
+- [medusa-config.ts](mdc:medusa-config.ts) - Main configuration with environment validation
+- [src/modules/marketplace](mdc:src/modules/marketplace) - Custom marketplace module
+- [src/api](mdc:src/api) - API routes (admin, store, vendor endpoints)
+- [src/workflows](mdc:src/workflows) - Business logic workflows
+- [src/jobs](mdc:src/jobs) - Background job processing
+- [src/subscribers](mdc:src/subscribers) - Event handlers
+
+### Frontend Structure
+- [storefront](mdc:storefront) - Next.js storefront for adopters
+- [src/vendor-dashboard](mdc:src/vendor-dashboard) - React dashboard for pet protectors
+- [src/admin](mdc:src/admin) - Medusa admin customizations
+
+### Configuration Files
+- [package.json](mdc:package.json) - Dependencies and scripts
+- [tsconfig.json](mdc:tsconfig.json) - TypeScript configuration
+- [docker-compose.yml](mdc:docker-compose.yml) - Local development setup
+
+## Environment Variables
+Required variables are validated in [medusa-config.ts](mdc:medusa-config.ts):
+- `DATABASE_URL` - PostgreSQL connection
+- `REDIS_URL` - Redis for caching (production only)
+- `JWT_SECRET`, `COOKIE_SECRET` - Authentication secrets
+- `STORE_CORS`, `ADMIN_CORS`, `AUTH_CORS` - CORS origins
+
+## Development Commands
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run seed:petrescue` - Seed Brazilian cities and sample data
+- `npm run test:integration:http` - Test critical API endpoints

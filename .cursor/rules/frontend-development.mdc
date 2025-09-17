@@ -1,0 +1,109 @@
+---
+globs: "storefront/**/*.ts,storefront/**/*.tsx,src/vendor-dashboard/**/*.ts,src/vendor-dashboard/**/*.tsx"
+description: "Frontend development guidelines for Medusa marketplace"
+---
+
+# Frontend Development Guidelines
+
+## Storefront (Next.js 15)
+
+### Architecture
+- **App Router** with TypeScript
+- **Portuguese localization** (pt-BR) throughout
+- **Server Components** for performance
+- **Client Components** for interactivity
+
+### Key Features
+- **Pet listing gallery** with filters
+- **Location-based search** (city/state)
+- **Urgency indicators** for pets needing immediate adoption
+- **Social sharing** buttons for pet listings
+- **Responsive design** for mobile/desktop
+
+### File Structure
+```
+storefront/
+├── app/                 # App Router pages
+├── components/         # Reusable components
+├── lib/               # Utilities and configurations
+├── public/            # Static assets
+└── styles/            # Global styles
+```
+
+### Component Patterns
+```typescript
+// Server Component for data fetching
+export default async function PetListings() {
+  const pets = await fetchPets()
+  return <PetGrid pets={pets} />
+}
+
+// Client Component for interactivity
+'use client'
+export function PetCard({ pet }: { pet: Pet }) {
+  const [isLiked, setIsLiked] = useState(false)
+  return <div>...</div>
+}
+```
+
+## Vendor Dashboard (React + Vite)
+
+### Purpose
+- **Pet protector management** interface
+- **Pet listing creation** and editing
+- **Report management** and response
+- **Profile management** for protectors
+
+### Technology Stack
+- **React 18** with TypeScript
+- **Vite** for fast development
+- **Tailwind CSS** for styling
+- **React Query** for data fetching
+
+### Key Features
+- **Dashboard overview** with statistics
+- **Pet management** (create, edit, delete)
+- **Photo upload** with preview
+- **Report handling** interface
+- **Profile settings** and preferences
+
+## Development Patterns
+
+### State Management
+- **Server state**: React Query for API data
+- **Client state**: useState/useReducer for UI state
+- **Form state**: React Hook Form for complex forms
+- **Global state**: Context API for user authentication
+
+### API Integration
+```typescript
+// Medusa API client
+const medusa = new Medusa({ 
+  baseUrl: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL 
+})
+
+// Data fetching with React Query
+const { data: pets, isLoading } = useQuery({
+  queryKey: ['pets'],
+  queryFn: () => medusa.store.product.list()
+})
+```
+
+### Styling Guidelines
+- **Mobile-first** responsive design
+- **Consistent spacing** using design tokens
+- **Accessibility** (ARIA labels, keyboard navigation)
+- **Performance** (lazy loading, image optimization)
+
+### Localization
+- **Portuguese (pt-BR)** as primary language
+- **Date formatting** for Brazilian locale
+- **Currency formatting** (even though no sales)
+- **Address formats** for Brazilian addresses
+
+## Performance Optimization
+- **Image optimization** for pet photos
+- **Code splitting** for vendor dashboard
+- **Lazy loading** for pet listings
+- **Caching strategies** for API responses
+- **Bundle analysis** and optimization

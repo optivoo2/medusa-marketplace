@@ -1,0 +1,61 @@
+---
+globs: "src/api/**/*.ts"
+description: "API development guidelines for Medusa marketplace"
+---
+
+# API Development Guidelines
+
+## Route Structure
+- Follow RESTful conventions
+- Use HTTP methods appropriately (GET, POST, PUT, DELETE)
+- Group related routes in subdirectories
+
+## Request/Response Handling
+```typescript
+export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
+  const { id } = req.params
+  
+  try {
+    const result = await vendorService.retrieveVendor(id)
+    res.json({ vendor: result })
+  } catch (error) {
+    res.status(404).json({ error: "Vendor not found" })
+  }
+}
+```
+
+## Authentication & Authorization
+- Use Medusa's built-in auth middleware
+- Validate user permissions for vendor operations
+- Check vendor ownership for sensitive operations
+
+## Error Handling
+- Return appropriate HTTP status codes
+- Provide meaningful error messages
+- Log errors for debugging (avoid exposing sensitive data)
+
+## Input Validation
+- Validate request parameters and body
+- Use Zod schemas for complex validation
+- Sanitize user inputs
+
+## CORS Configuration
+- Respect CORS settings from [medusa-config.ts](mdc:medusa-config.ts)
+- Use environment-specific origins
+- Handle preflight requests properly
+
+## Rate Limiting
+- Implement rate limiting for public endpoints
+- Especially for report creation and vendor registration
+- Use Redis for distributed rate limiting
+
+## API Documentation
+- Document endpoints with clear parameter descriptions
+- Include example requests/responses
+- Maintain API versioning strategy
+
+## Security Considerations
+- Validate file uploads (images for pets)
+- Sanitize HTML content in descriptions
+- Implement CSRF protection where needed
+- Use HTTPS in production

@@ -1,6 +1,6 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { Modules } from "@medusajs/framework/utils"
-import { MARKETPLACE_MODULE } from "../../../../../modules/marketplace"
+import { resolveMarketplaceService } from "../../../../../modules/marketplace"
 
 // POST /store/products/[id]/report - Create a report for a product
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
@@ -33,7 +33,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       // ignore if customer module/auth not available in context
     }
 
-    const marketplaceService = req.scope.resolve(MARKETPLACE_MODULE)
+    const marketplaceService = resolveMarketplaceService(req.scope)
 
     const report = await marketplaceService.createReports([
       {
@@ -63,5 +63,4 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     return res.status(500).json({ error: e.message })
   }
 }
-
 

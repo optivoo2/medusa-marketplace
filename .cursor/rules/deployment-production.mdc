@@ -1,0 +1,75 @@
+---
+description: "Deployment and production guidelines for Medusa marketplace"
+---
+
+# Deployment & Production Guidelines
+
+## Environment Configuration
+
+### Required Environment Variables
+All variables validated in [medusa-config.ts](mdc:medusa-config.ts):
+- `DATABASE_URL` - PostgreSQL connection (SSL required in production)
+- `REDIS_URL` - Redis for caching, event bus, and distributed locking
+- `JWT_SECRET` - Strong secret (≥32 chars, never "supersecret")
+- `COOKIE_SECRET` - Strong secret (≥32 chars, never "supersecret")
+- `STORE_CORS` - Storefront domain (e.g., https://app.petrescue.org.br)
+- `ADMIN_CORS` - Admin panel domain
+- `AUTH_CORS` - Authentication domain
+- `MEDUSA_BACKEND_URL` - Backend API URL
+- `PORT=9000` - Application port
+- `MEDUSA_WORKER_MODE=server` - Worker configuration
+
+### Production Checklist
+1. **Security**: All secrets use strong values (≥32 chars)
+2. **CORS**: Restrictive origins for production domains
+3. **Database**: SSL enabled, backups configured
+4. **Redis**: Managed service with authentication
+5. **HTTPS**: SSL certificates for all services
+6. **Rate Limiting**: Implemented for public endpoints
+
+## Deployment Platforms
+
+### Railway Deployment
+- Configuration in [railway.json](mdc:railway.json)
+- Environment variables set in Railway dashboard
+- Automatic deployments from Git
+- Health checks via `/health` endpoint
+
+### Vercel Deployment
+- Storefront deployment via [vercel.json](mdc:vercel.json)
+- Serverless functions for API routes
+- Edge functions for performance
+- Environment variables in Vercel dashboard
+
+## Build Process
+```bash
+# Production build
+npm install --omit=dev --legacy-peer-deps
+npm run build
+npx medusa db:migrate
+```
+
+## Monitoring & Observability
+- **Health checks**: `/health` endpoint
+- **Metrics**: OpenTelemetry instrumentation in [instrumentation.ts](mdc:instrumentation.ts)
+- **Logging**: Structured logging for debugging
+- **Error tracking**: Centralized error reporting
+
+## Performance Optimization
+- **Redis caching**: For sessions and frequently accessed data
+- **Database indexing**: Optimized queries for pet listings
+- **CDN**: Static assets and images
+- **Compression**: Gzip/Brotli for API responses
+
+## Security Measures
+- **Input validation**: All user inputs sanitized
+- **File uploads**: Restricted to images, virus scanning
+- **Rate limiting**: Prevent abuse of reporting system
+- **CSRF protection**: For state-changing operations
+- **Content Security Policy**: XSS prevention
+
+## Backup Strategy
+- **Database**: Daily automated backups
+- **File storage**: Pet images backed up to cloud storage
+- **Configuration**: Environment variables versioned
+- **Disaster recovery**: Multi-region deployment capability

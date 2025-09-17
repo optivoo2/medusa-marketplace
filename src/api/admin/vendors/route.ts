@@ -1,10 +1,10 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
-import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
+import { resolveMarketplaceService } from "../../../modules/marketplace"
 
 // GET /admin/vendors - List all vendors
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
-    const marketplaceService = req.scope.resolve(MARKETPLACE_MODULE)
+    const marketplaceService = resolveMarketplaceService(req.scope)
     
     const vendors = await marketplaceService.listVendors()
 
@@ -18,7 +18,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
 // POST /admin/vendors - Create a new vendor
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
-    const marketplaceService = req.scope.resolve(MARKETPLACE_MODULE)
+    const marketplaceService = resolveMarketplaceService(req.scope)
     
     const vendor = await marketplaceService.createVendors([req.body as any])
 

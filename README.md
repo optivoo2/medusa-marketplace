@@ -81,6 +81,13 @@ Plataforma baseada no ecossistema Medusa para conectar protetores independentes 
 - **Política anti-venda:** middlewares `anti-sale` e `adoption-policy` bloqueiam criação de preços e checkout para anúncios de adoção. Mantenha testes cobrindo esses fluxos.
 - **Segurança operacional:** habilite HTTPS em todos os serviços, configure rate limiting (via gateway/API) para criação de denúncias e logins, e monitore a fila de denúncias via dashboard admin.
 
+### Checklist de prontidão para produção
+1. **Variáveis no Railway:** defina `DATABASE_URL`, `REDIS_URL`, `JWT_SECRET`, `COOKIE_SECRET`, `STORE_CORS`, `ADMIN_CORS`, `AUTH_CORS`, `MEDUSA_BACKEND_URL`, `PORT=9000`, `MEDUSA_WORKER_MODE=server` e `MEDUSA_ADMIN_ONBOARDING_TYPE=default` antes do deploy.
+2. **Instalação e build:** rode `npm install --omit=dev --legacy-peer-deps` seguido de `npm run build`.
+3. **Migrations:** execute `npx medusa db:migrate` após cada alteração de schema.
+4. **API Keys públicas:** crie uma chave publicável no Admin e injete seu valor em todas as chamadas públicas via header `x-publishable-api-key`.
+5. **Smoke tests:** valide `GET /health`, `GET /` e os fluxos principais da API (`/store/products`, `/admin`) antes de liberar.
+
 ## Referências de Documentação Medusa
 - [Framework Fundamentals](https://docs.medusajs.com/learn/fundamentals/framework)
 - [Modules & Links](https://docs.medusajs.com/learn/fundamentals/modules)

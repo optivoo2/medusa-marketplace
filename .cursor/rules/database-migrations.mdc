@@ -1,0 +1,155 @@
+---
+globs: "src/**/*.migration.ts,src/**/models/**/*.ts"
+description: "Database and migration guidelines for Medusa marketplace"
+---
+
+# Database & Migration Guidelines
+
+## Database Schema
+
+### Core Models
+- **Vendor**: Pet protectors (individuals/NGOs)
+- **VendorAdmin**: Users associated with vendors
+- **Report**: Content moderation reports
+- **Product**: Pet listings (extended Medusa model)
+- **User**: Medusa's built-in user model
+
+### Model Relationships
+```typescript
+// Vendor has many VendorAdmins
+Vendor -> VendorAdmin (one-to-many)
+
+// VendorAdmin belongs to User
+VendorAdmin -> User (many-to-one)
+
+// Report targets various entities
+Report -> Product (polymorphic)
+Report -> Vendor (polymorphic)
+```
+
+## Migration Patterns
+
+### Creating Migrations
+```bash
+# Generate migration
+npx medusa db:generate migration-name
+
+# Apply migrations
+npx medusa db:migrate
+
+# Rollback (if needed)
+npx medusa db:revert
+```
+
+### Migration Best Practices
+- **Version control** all migration files
+- **Test migrations** on development database first
+- **Backup database** before production migrations
+- **Atomic operations** - migrations should be reversible
+- **Data migrations** separate from schema migrations
+
+## Model Definition
+
+### MikroORM Patterns
+```typescript
+@Entity()
+export class Vendor {
+  @PrimaryKey()
+  id!: string
+
+  @Property()
+  name!: string
+
+  @Property()
+  email!: string
+
+  @Property({ nullable: true })
+  phone?: string
+
+  @Property({ nullable: true })
+  address?: string
+
+  @Property({ default: false })
+  is_active!: boolean
+
+  @OneToMany(() => VendorAdmin, admin => admin.vendor)
+  admins = new Collection<VendorAdmin>(this)
+
+  @OneToMany(() => Report, report => report.vendor)
+  reports = new Collection<Report>(this)
+}
+```
+
+## Data Seeding
+
+### Seed Scripts
+- [src/scripts/seed.ts](mdc:src/scripts/seed.ts) - Generic Medusa seed
+- [src/scripts/seed-petrescue.ts](mdc:src/scripts/seed-petrescue.ts) - PetRescue specific data
+
+### Seed Data Structure
+```typescript
+// Brazilian cities and states
+const cities = [
+  { name: "São Paulo", state: "SP", region: "Sudeste" },
+  { name: "Rio de Janeiro", state: "RJ", region: "Sudeste" },
+  // ...
+]
+
+// Pet categories
+const categories = [
+  { name: "Cães", description: "Cachorros para adoção" },
+  { name: "Gatos", description: "Gatos para adoção" },
+  // ...
+]
+```
+
+## Query Optimization
+
+### Indexing Strategy
+- **Primary keys** on all entities
+- **Foreign key indexes** for relationships
+- **Search indexes** on frequently queried fields
+- **Composite indexes** for complex queries
+
+### Query Patterns
+```typescript
+// Efficient vendor lookup
+const vendor = await vendorService.retrieveVendor(id, {
+  populate: ['admins', 'reports']
+})
+
+// Paginated pet listings
+const pets = await productService.listProducts({
+  limit: 20,
+  offset: 0,
+  filters: { category_id: 'dogs' }
+})
+```
+
+## Data Validation
+
+### Model Validation
+- **Required fields** validation
+- **Email format** validation
+- **Phone number** format (Brazilian)
+- **Address** validation
+
+### Business Rules
+- **Vendor approval** workflow
+- **Pet listing** validation
+- **Report** content validation
+- **Geographic** constraints
+
+## Backup & Recovery
+
+### Backup Strategy
+- **Daily automated** backups
+- **Point-in-time** recovery capability
+- **Cross-region** backup storage
+- **Backup testing** procedures
+
+### Recovery Procedures
+- **Database restore** from backup
+- **Migration rollback** procedures
+- **Data integrity** verification
+- **Service restoration** checklist

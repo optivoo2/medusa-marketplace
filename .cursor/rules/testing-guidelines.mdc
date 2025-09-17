@@ -1,0 +1,75 @@
+---
+globs: "**/*.test.ts,**/*.spec.ts,integration-tests/**/*.ts"
+description: "Testing guidelines for Medusa marketplace"
+---
+
+# Testing Guidelines
+
+## Test Structure
+- **Unit tests**: Service methods, utilities, business logic
+- **Integration tests**: API endpoints, database operations
+- **HTTP tests**: Critical user flows (adoption, reporting)
+
+## Test Organization
+```
+integration-tests/
+├── http/           # API endpoint tests
+├── modules/        # Module integration tests
+└── workflows/      # Workflow tests
+```
+
+## Test Commands
+- `npm run test:unit` - Unit tests only
+- `npm run test:integration:http` - HTTP API tests
+- `npm run test:integration:modules` - Module tests
+
+## Testing Patterns
+
+### Service Testing
+```typescript
+describe("VendorService", () => {
+  it("should create vendor with valid data", async () => {
+    const vendorData = { name: "Test Protector", email: "test@example.com" }
+    const vendor = await vendorService.createVendor(vendorData)
+    expect(vendor.id).toBeDefined()
+  })
+})
+```
+
+### API Testing
+```typescript
+describe("POST /store/vendors", () => {
+  it("should create vendor registration", async () => {
+    const response = await request(app)
+      .post("/store/vendors")
+      .send(validVendorData)
+      .expect(201)
+    
+    expect(response.body.vendor).toBeDefined()
+  })
+})
+```
+
+## Test Data Management
+- Use **factories** for test data creation
+- **Clean up** test data after each test
+- Use **transactions** for database tests
+- **Mock external services** (email, file upload)
+
+## Critical Test Coverage
+- **Vendor registration** and approval flow
+- **Pet listing** creation and validation
+- **Report system** functionality
+- **Anti-sale** policy enforcement
+- **Authentication** and authorization
+
+## Performance Testing
+- Test **database queries** for efficiency
+- **Load testing** for public endpoints
+- **Memory usage** monitoring in tests
+
+## Test Environment
+- Use **separate test database**
+- **Environment variables** for test config
+- **Docker setup** for integration tests
+- **CI/CD** pipeline integration

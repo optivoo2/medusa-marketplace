@@ -1,0 +1,69 @@
+---
+description: "PetRescue Brasil marketplace business logic and domain rules"
+---
+
+# PetRescue Brasil Business Logic
+
+## Core Domain Concepts
+
+### Pet Adoption Platform
+This is a **pet adoption marketplace**, not a commercial sales platform. Key principles:
+- **No monetary transactions** for pets (adoption is free)
+- **Anti-sale policies** enforced via middleware
+- **Protection focus** - connecting protectors with adopters
+
+### Vendor (Protector) Management
+- Vendors represent **pet protectors** (individuals or NGOs)
+- Each vendor can have multiple **VendorAdmins** (users)
+- Vendors must be **approved** before publishing pets
+- **Geographic focus**: São Paulo, Rio de Janeiro, Belo Horizonte (MVP)
+
+### Pet Listings
+- Pets are listed as **products** in Medusa
+- **No pricing** - adoption is free
+- **Urgency indicators** for pets needing immediate adoption
+- **Location-based filtering** by city/state
+- **Category system** for pet types (dogs, cats, etc.)
+
+### Reporting System
+- **Report model** for inappropriate content
+- **Queue management** for report processing
+- **Admin dashboard** for report review
+- **Rate limiting** on report creation
+
+## Business Rules Implementation
+
+### Anti-Sale Enforcement
+```typescript
+// Middleware prevents pricing on adoption listings
+// Workflows block checkout for pet products
+// Admin policies prevent commercial transactions
+```
+
+### Geographic Constraints
+- Focus on Brazilian cities initially
+- State/city filtering in storefront
+- Location-based vendor registration
+
+### Content Moderation
+- Report system for inappropriate listings
+- Admin review workflow
+- Automated content filtering where possible
+
+## Data Seeding
+- Brazilian cities and states
+- Pet categories (dogs, cats, birds, etc.)
+- Sample protector profiles
+- Example pet listings with photos
+
+## Localization
+- **Portuguese (pt-BR)** throughout
+- Brazilian address formats
+- Local currency formatting (even though no sales)
+- Brazilian phone number formats
+
+## Integration Points
+- **Social sharing** for pet listings
+- **Map integration** for location display
+- **Image hosting** for pet photos
+- **Email notifications** for adoption inquiries

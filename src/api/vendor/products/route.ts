@@ -1,6 +1,5 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { authenticateVendor } from "../authenticate-vendor"
-import { MARKETPLACE_MODULE } from "../../../modules/marketplace"
 import { Modules } from "@medusajs/framework/utils"
 
 // GET /vendor/products - List vendor's products

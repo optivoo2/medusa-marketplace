@@ -1,0 +1,61 @@
+---
+globs: "*.ts,*.tsx"
+description: "TypeScript coding conventions for Medusa marketplace"
+---
+
+# TypeScript Conventions
+
+## Code Style
+- **Always use semicolons** at the end of statements
+- Use **double quotes** for strings consistently
+- Prefer **const** over let, avoid var
+- Use **explicit return types** for public methods and complex functions
+- Prefer **interface** over type for object shapes
+
+## Medusa-Specific Patterns
+
+### Service Classes
+```typescript
+export default class VendorService extends MedusaService({
+  Vendor,
+  VendorAdmin,
+  Report,
+}) {
+  // Service methods with explicit return types
+  async getVendorByUserId(userId: string): Promise<Vendor | null> {
+    // Implementation
+  }
+}
+```
+
+### API Routes
+```typescript
+export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
+  // Route implementation
+}
+```
+
+### Workflows
+```typescript
+export const createVendorWorkflow = createWorkflow(
+  "create-vendor",
+  async (input: CreateVendorInput): Promise<Vendor> => {
+    // Workflow steps
+  }
+)
+```
+
+## Error Handling
+- Use **try-catch** blocks for async operations
+- Throw meaningful errors with context
+- Use Medusa's built-in error types when available
+
+## Imports
+- Group imports: external packages first, then internal modules
+- Use **named imports** for Medusa utilities
+- Prefer **relative imports** for local modules
+
+## Type Safety
+- Avoid `any` type - use proper typing or `unknown`
+- Use **strict null checks** where appropriate
+- Leverage Medusa's generated types from `.medusa/types`
