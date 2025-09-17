@@ -2,7 +2,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "installCommand": "npm install",
+  "installCommand": "npm ci --legacy-peer-deps || npm install --legacy-peer-deps",
   "devCommand": "npm run dev",
   "env": {
     "NEXT_PUBLIC_MEDUSA_BACKEND_URL": "https://api.petrescue.org.br",
