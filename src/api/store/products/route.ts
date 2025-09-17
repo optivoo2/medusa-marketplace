@@ -131,6 +131,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
             // No pricing - adoption is free
           },
         ],
+        // @ts-expect-error: tags not in types but works in runtime
         tags: [
           { value: "adocao" },
           { value: species.toLowerCase() },

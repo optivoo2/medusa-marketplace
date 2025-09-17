@@ -20,7 +20,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     const marketplaceService = req.scope.resolve(MARKETPLACE_MODULE)
     
-    const vendor = await marketplaceService.createVendors([req.body])
+    const vendor = await marketplaceService.createVendors([req.body as any])
 
     res.status(201).json({ vendor })
   } catch (error) {
