@@ -1,4 +1,5 @@
 import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { Modules } from '@medusajs/framework/utils'
 import marketplaceModule from './src/modules/marketplace'
 import { vendorProductLink } from './src/links'
 
@@ -19,10 +20,28 @@ requiredEnvVars.forEach((name) => {
   }
 })
 
+// Production modules for Railway deployment
+const productionModules = process.env.REDIS_URL ? [
+  {
+    resolve: "@medusajs/cache-redis",
+    options: {
+      redisUrl: process.env.REDIS_URL,
+    },
+  },
+  {
+    resolve: "@medusajs/event-bus-redis",
+    options: {
+      redisUrl: process.env.REDIS_URL,
+    },
+  },
+] : []
+
 // cast as any to allow custom properties like links while keeping type safety in code
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    redisUrl: process.env.REDIS_URL,
+    workerMode: process.env.MEDUSA_WORKER_MODE as "shared" | "worker" | "server" || "server",
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
@@ -31,10 +50,15 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET!,
     }
   },
+  admin: {
+    backendUrl: process.env.MEDUSA_BACKEND_URL,
+    disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
+  },
   modules: [
     {
       resolve: "./src/modules/marketplace"
-    }
+    },
+    ...productionModules
   ],
   // @ts-ignore - links is a custom extension for this project wiring
   links: [
