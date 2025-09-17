@@ -2,14 +2,17 @@
   "version": 2,
   "builds": [
     {
-      "src": ".medusa/server/index.js",
-      "use": "@vercel/node"
+      "src": "package.json",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [".medusa/server/**"]
+      }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": ".medusa/server/index.js"
+      "dest": "/"
     }
   ],
   "env": {
