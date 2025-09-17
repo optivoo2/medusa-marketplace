@@ -1,4 +1,4 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/medusa"
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { Modules } from "@medusajs/framework/utils"
 import { authenticateVendor } from "../authenticate-vendor"
 
@@ -6,7 +6,7 @@ import { authenticateVendor } from "../authenticate-vendor"
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     await authenticateVendor(req, res, async () => {
-      const vendor = req.vendor
+      const vendor = (req as any).vendor
       const orderModule = req.scope.resolve(Modules.ORDER)
 
       const orders = await orderModule.listOrders(

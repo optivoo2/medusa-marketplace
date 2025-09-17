@@ -1,4 +1,4 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/medusa"
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 
 // GET /admin/settings/marketplace - Get marketplace settings
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
@@ -23,7 +23,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
 export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     // In a real implementation, you would save these settings to the database
-    const settings = req.body
+    const settings = (req.body || {}) as any
 
     // Validate settings
     if (settings.vendor_commission_rate < 0 || settings.vendor_commission_rate > 100) {
@@ -36,7 +36,7 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
 
     // Save settings (implement database storage here)
     res.json({ settings })
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message })
   }
 }

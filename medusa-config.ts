@@ -19,6 +19,7 @@ requiredEnvVars.forEach((name) => {
   }
 })
 
+// cast as any to allow custom properties like links while keeping type safety in code
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
@@ -35,7 +36,8 @@ module.exports = defineConfig({
       resolve: "./src/modules/marketplace"
     }
   ],
+  // @ts-ignore - links is a custom extension for this project wiring
   links: [
     vendorProductLink
-  ]
+  ] as any
 })

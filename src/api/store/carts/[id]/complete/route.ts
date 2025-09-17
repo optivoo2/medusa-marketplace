@@ -16,10 +16,12 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     if (cart?.items && cart.items.length > 0) {
       // Check if any items are adoption products
       const productIds = cart.items.map((item: any) => item.product_id)
-      const adoptionProducts = await productModule.listProducts({
-        id: productIds,
-        categories: { handle: "adocao" }
-      })
+      // Prefer category ID lookups to avoid type mismatch on filters
+      const adoptionCategory = await productModule.listProductCategories({ handle: "adocao" })
+      const adoptionCategoryId = adoptionCategory?.[0]?.id
+      const adoptionProducts = adoptionCategoryId
+        ? await productModule.listProducts({ id: productIds, categories: [adoptionCategoryId] })
+        : []
       
       if (adoptionProducts.length > 0) {
         return res.status(400).json({
@@ -37,9 +39,10 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       }
     })
 
+    const r: any = result as any
     res.json({
-      order: result.originalCart,
-      vendor_orders: result.vendorOrders
+      order: r.originalCart,
+      vendor_orders: r.vendorOrders
     })
   } catch (error) {
     res.status(500).json({ error: error.message })

@@ -4,7 +4,7 @@
 import { registerOtel } from "@medusajs/medusa"
 
 // Use OTLP exporter for production (compatible with most observability platforms)
-import { OTLPTraceExporter } from "@opentelemetry/exporter-otlp-http"
+import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http"
 
 // Initialize OTLP exporter
 const exporter = new OTLPTraceExporter({

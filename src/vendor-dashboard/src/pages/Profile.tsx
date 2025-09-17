@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext'
 import axios from 'axios'
 
 export const Profile: React.FC = () => {
-  const { vendor } = useAuth()
+  const { vendor } = useAuth() as any
   const [profile, setProfile] = useState({
     name: '',
     email: '',
@@ -20,16 +20,17 @@ export const Profile: React.FC = () => {
 
   useEffect(() => {
     if (vendor) {
+      const v: any = vendor
       setProfile({
-        name: vendor.name || '',
-        email: vendor.email || '',
-        description: vendor.description || '',
-        phone: vendor.phone || '',
-        website: vendor.website || '',
-        address: vendor.address || '',
-        city: vendor.city || '',
-        country: vendor.country || '',
-        postal_code: vendor.postal_code || ''
+        name: v?.name || '',
+        email: v?.email || '',
+        description: v?.description || '',
+        phone: v?.phone || '',
+        website: v?.website || '',
+        address: v?.address || '',
+        city: v?.city || '',
+        country: v?.country || '',
+        postal_code: v?.postal_code || ''
       })
       setLoading(false)
     }
@@ -220,7 +221,7 @@ export const Profile: React.FC = () => {
                   </div>
 
                   <div className="col-span-6 sm:col-span-3">
-                    <label htmlFor="postal_code" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="postal_code" className="block text sm font-medium text-gray-700">
                       CEP
                     </label>
                     <input

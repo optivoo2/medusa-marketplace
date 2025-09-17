@@ -43,9 +43,9 @@ export const authenticateVendor = async (
       return res.status(403).json({ error: "Acesso negado. Usuário não é responsável por um protetor." })
     }
 
-    // Add vendor and user information to the request
-    req.vendor = vendor
-    req.user = { id: userId }
+    // Add vendor and user information to the request (augment type)
+    ;(req as any).vendor = vendor
+    ;(req as any).user = { id: userId }
 
     next()
   } catch (error) {

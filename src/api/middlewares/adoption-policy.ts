@@ -14,7 +14,7 @@ export const preventAdoptionProductPurchase = async (
     
     // Check if this is a cart operation
     if (req.method === "POST" && req.url?.includes("/carts/")) {
-      const { items } = req.body || {}
+      const { items } = (req.body || {}) as any
       
       if (items && Array.isArray(items)) {
         for (const item of items) {

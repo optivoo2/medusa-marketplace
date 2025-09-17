@@ -28,7 +28,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       contact_email,
       contact_phone,
       contact_name,
-    } = req.body || {}
+    } = (req.body || {}) as any
 
     // Validation for required fields
     const requiredFields = {
@@ -43,7 +43,8 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
     }
 
     for (const [field, message] of Object.entries(requiredFields)) {
-      if (!req.body[field]) {
+      const body: any = req.body as any
+      if (!body[field]) {
         return res.status(400).json({ error: message })
       }
     }

@@ -6,7 +6,7 @@ import { MARKETPLACE_MODULE } from "../../../../../modules/marketplace"
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     const productId = req.params.id
-    const { reason, message } = req.body || {}
+    const { reason, message } = (req.body || {}) as any
 
     if (!reason) {
       return res.status(400).json({ error: "reason é obrigatório" })
@@ -20,7 +20,9 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
       const customerModule = req.scope.resolve(Modules.CUSTOMER)
       const authUser = (req as any).auth?.user
       if (authUser?.id) {
-        const customers = await customerModule.listCustomers({ user_id: authUser.id })
+        const customers = await customerModule.listCustomers({
+          user_id: authUser.id,
+        } as any)
         const customer = customers?.[0]
         if (customer) {
           reportedByUserId = customer.id

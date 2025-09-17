@@ -5,7 +5,7 @@ import { MARKETPLACE_MODULE } from "../../../../modules/marketplace"
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     const { id } = req.params
-    const { status, metadata } = req.body || {}
+    const { status, metadata } = (req.body || {}) as any
     if (!id) {
       return res.status(400).json({ error: "id é obrigatório" })
     }

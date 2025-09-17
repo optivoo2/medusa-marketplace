@@ -1,4 +1,4 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/medusa"
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { authenticateVendor } from "../../authenticate-vendor"
 
 // GET /vendor/products/[id] - Get a specific vendor's product
@@ -6,7 +6,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     await authenticateVendor(req, res, async () => {
       const productService = req.scope.resolve("productService")
-      const vendor = req.vendor
+      const vendor = (req as any).vendor
       const productId = req.params.id
 
       const product = await productService.retrieve(productId)
@@ -28,7 +28,7 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     await authenticateVendor(req, res, async () => {
       const productService = req.scope.resolve("productService")
-      const vendor = req.vendor
+      const vendor = (req as any).vendor
       const productId = req.params.id
 
       const product = await productService.retrieve(productId)
@@ -52,7 +52,7 @@ export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     await authenticateVendor(req, res, async () => {
       const productService = req.scope.resolve("productService")
-      const vendor = req.vendor
+      const vendor = (req as any).vendor
       const productId = req.params.id
 
       const product = await productService.retrieve(productId)

@@ -21,10 +21,10 @@ export const antiSaleMiddleware = async (
       // Get cart items or product IDs from request
       let productIds: string[] = []
       
-      if (req.body?.items) {
-        productIds = req.body.items.map((item: any) => item.product_id || item.variant_id)
-      } else if (req.body?.product_id) {
-        productIds = [req.body.product_id]
+      if ((req.body as any)?.items) {
+        productIds = (req.body as any).items.map((item: any) => item.product_id || item.variant_id)
+      } else if ((req.body as any)?.product_id) {
+        productIds = [(req.body as any).product_id]
       } else if (req.params?.id) {
         // For cart operations, get the cart and check its items
         try {
@@ -40,10 +40,11 @@ export const antiSaleMiddleware = async (
       
       // Check if any products are adoption products
       if (productIds.length > 0) {
-        const products = await productModule.listProducts({
-          id: productIds,
-          categories: { handle: "adocao" }
-        })
+        const adoptionCategory = await productModule.listProductCategories({ handle: "adocao" })
+        const adoptionCategoryId = adoptionCategory?.[0]?.id
+        const products = adoptionCategoryId
+          ? await productModule.listProducts({ id: productIds, categories: [adoptionCategoryId] })
+          : []
         
         if (products.length > 0) {
           return res.status(400).json({

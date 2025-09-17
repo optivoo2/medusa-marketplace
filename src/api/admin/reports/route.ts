@@ -26,7 +26,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     const { id } = (req.query || {}) as any
-    const { status } = req.body || {}
+    const { status } = (req.body || {}) as any
     if (!id || !status) {
       return res.status(400).json({ error: "id e status são obrigatórios" })
     }

@@ -28,6 +28,7 @@
     "vercel:setup": "npm run vercel:auth"
   },
   "dependencies": {
+    "@opentelemetry/exporter-trace-otlp-http": "^0.52.1",
     "@medusajs/admin-sdk": "2.10.2",
     "@medusajs/cli": "2.10.2",
     "@medusajs/framework": "2.10.2",

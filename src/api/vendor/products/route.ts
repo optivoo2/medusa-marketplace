@@ -8,7 +8,7 @@ export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     await authenticateVendor(req, res, async () => {
       const productService = req.scope.resolve(Modules.PRODUCT)
-      const vendor = req.vendor
+      const vendor = (req as any).vendor
 
       const products = await productService.listProducts({
         metadata: {
@@ -29,12 +29,12 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     await authenticateVendor(req, res, async () => {
       const productService = req.scope.resolve(Modules.PRODUCT)
-      const vendor = req.vendor
+      const vendor = (req as any).vendor
 
       const productData = {
-        ...req.body,
+        ...(req.body as any),
         metadata: {
-          ...req.body.metadata,
+          ...(req.body as any).metadata,
           vendor_id: vendor.id
         }
       }

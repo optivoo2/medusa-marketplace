@@ -60,7 +60,7 @@ export const splitOrderByVendorWorkflow = createWorkflow(
       async ({ splitData }, { container }) => {
         const orderService = container.resolve(Modules.ORDER)
         const cartService = container.resolve(Modules.CART)
-        const createdOrders = []
+        const createdOrders: any[] = []
 
         for (const vendorGroup of splitData.vendorGroups) {
           // Create a new cart for this vendor
@@ -112,6 +112,6 @@ export const splitOrderByVendorWorkflow = createWorkflow(
       }
     )
 
-    return orderData
+    return orderData as any
   }
 )

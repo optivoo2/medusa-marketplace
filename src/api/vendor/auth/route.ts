@@ -1,9 +1,9 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/medusa"
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 
 // POST /vendor/auth/login - Vendor login
 export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
-    const { email, password } = req.body
+    const { email, password } = (req.body || {}) as any
 
     if (!email || !password) {
       return res.status(400).json({ error: "Email e senha são obrigatórios." })

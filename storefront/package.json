@@ -31,10 +31,7 @@
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "server-only": "^0.0.1",
     "tailwindcss-radix": "^2.8.0",
-    "webpack": "^5",
-    "mcp-handler": "^1.0.2",
-    "@vercel/sdk": "^1.11.1",
-    "zod": "^3.23.8"
+    "webpack": "^5"
   },
   "devDependencies": {
     "@babel/core": "^7.17.5",

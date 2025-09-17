@@ -1,4 +1,4 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/medusa"
+import type { MedusaRequest, MedusaResponse } from "@medusajs/framework"
 import { Modules } from "@medusajs/framework/utils"
 import { authenticateVendor } from "../authenticate-vendor"
 
@@ -6,13 +6,13 @@ import { authenticateVendor } from "../authenticate-vendor"
 export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     await authenticateVendor(req, res, async () => {
-      const vendor = req.vendor
+      const vendor = (req as any).vendor
       const userModule = req.scope.resolve(Modules.USER)
-      let user = req.user || null
+      let user = (req as any).user || null
 
       if (user?.id) {
         try {
-          const [foundUser] = await userModule.listUsers({ id: [user.id] })
+          const [foundUser] = await userModule.listUsers({ id: [user.id] } as any)
           if (foundUser) {
             user = {
               id: foundUser.id,
@@ -37,7 +37,7 @@ export const PUT = async (req: MedusaRequest, res: MedusaResponse) => {
   try {
     await authenticateVendor(req, res, async () => {
       const marketplaceService = req.scope.resolve("marketplaceModule")
-      const vendor = req.vendor
+      const vendor = (req as any).vendor
 
       const updatedVendor = await marketplaceService.updateVendor(vendor.id, req.body)
 

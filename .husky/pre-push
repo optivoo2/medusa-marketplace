@@ -1,0 +1,12 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running typecheck & build before push..."
+NODE_ENV=production DATABASE_URL=postgres://user:pass@localhost:5432/db STORE_CORS='*' ADMIN_CORS='*' AUTH_CORS='*' JWT_SECRET=prepush COOKIE_SECRET=prepush npm run build
+RESULT=$?
+if [ $RESULT -ne 0 ]; then
+  echo "Build failed. Aborting push."
+  exit 1
+fi
+
+exit 0

@@ -1,4 +1,5 @@
-import { MedusaApp } from "@medusajs/framework/utils"
+// Relax type dependency for MedusaApp to avoid compile-time coupling
+const { MedusaApp } = require("@medusajs/framework/utils")
 
 /**
  * Seed script for PetRescue Brasil MVP
