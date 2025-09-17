@@ -6,7 +6,6 @@ import {
   Badge, 
   Button, 
   Input,
-  Form,
   Text
 } from "@medusajs/ui"
 
@@ -161,38 +160,32 @@ const CreateVendorModal: React.FC<{
       </div>
       <form onSubmit={handleSubmit}>
         <div className="space-y-4">
-          <Form.Field>
-            <Form.Label>Name</Form.Label>
-            <Form.Control>
-              <Input
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-              />
-            </Form.Control>
-          </Form.Field>
+          <div>
+            <label className="block text-sm font-medium mb-1">Name</label>
+            <Input
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              required
+            />
+          </div>
           
-          <Form.Field>
-            <Form.Label>Email</Form.Label>
-            <Form.Control>
-              <Input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-              />
-            </Form.Control>
-          </Form.Field>
+          <div>
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <Input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              required
+            />
+          </div>
           
-          <Form.Field>
-            <Form.Label>Description</Form.Label>
-            <Form.Control>
-              <Input
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              />
-            </Form.Control>
-          </Form.Field>
+          <div>
+            <label className="block text-sm font-medium mb-1">Description</label>
+            <Input
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            />
+          </div>
         </div>
         <div className="flex justify-end space-x-2 mt-6">
           <Button type="button" variant="secondary" onClick={onClose}>
