@@ -11,4 +11,4 @@ cmds=["npm install --legacy-peer-deps"]
 cmds=["npm run build"]
 
 [deploy]
-startCommand = "cd .medusa/server && npm install && npm run predeploy && npm run start"
+startCommand = "cd .medusa/server && npm install --legacy-peer-deps && npm run predeploy && npm run start"
