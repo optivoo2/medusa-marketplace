@@ -6,8 +6,8 @@ import {
   Badge, 
   Button, 
   Input,
-  Modal,
-  Form
+  Form,
+  Text
 } from "@medusajs/ui"
 
 interface Vendor {
@@ -111,10 +111,14 @@ export const VendorsPage: React.FC = () => {
       </Table>
 
       {showCreateModal && (
-        <CreateVendorModal
-          onClose={() => setShowCreateModal(false)}
-          onSuccess={fetchVendors}
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+            <CreateVendorModal
+              onClose={() => setShowCreateModal(false)}
+              onSuccess={fetchVendors}
+            />
+          </div>
+        </div>
       )}
     </Container>
   )
@@ -148,57 +152,56 @@ const CreateVendorModal: React.FC<{
   }
 
   return (
-    <Modal open onOpenChange={onClose}>
-      <Modal.Content>
-        <Modal.Header>
-          <Modal.Title>Create New Vendor</Modal.Title>
-        </Modal.Header>
-        <form onSubmit={handleSubmit}>
-          <Modal.Body>
-            <div className="space-y-4">
-              <Form.Field>
-                <Form.Label>Name</Form.Label>
-                <Form.Control>
-                  <Input
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                  />
-                </Form.Control>
-              </Form.Field>
-              
-              <Form.Field>
-                <Form.Label>Email</Form.Label>
-                <Form.Control>
-                  <Input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                  />
-                </Form.Control>
-              </Form.Field>
-              
-              <Form.Field>
-                <Form.Label>Description</Form.Label>
-                <Form.Control>
-                  <Input
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  />
-                </Form.Control>
-              </Form.Field>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button type="button" variant="secondary" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit">Create Vendor</Button>
-          </Modal.Footer>
-        </form>
-      </Modal.Content>
-    </Modal>
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <Heading level="h2">Create New Vendor</Heading>
+        <Button variant="secondary" onClick={onClose}>
+          ×
+        </Button>
+      </div>
+      <form onSubmit={handleSubmit}>
+        <div className="space-y-4">
+          <Form.Field>
+            <Form.Label>Name</Form.Label>
+            <Form.Control>
+              <Input
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+            </Form.Control>
+          </Form.Field>
+          
+          <Form.Field>
+            <Form.Label>Email</Form.Label>
+            <Form.Control>
+              <Input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+              />
+            </Form.Control>
+          </Form.Field>
+          
+          <Form.Field>
+            <Form.Label>Description</Form.Label>
+            <Form.Control>
+              <Input
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              />
+            </Form.Control>
+          </Form.Field>
+        </div>
+        <div className="flex justify-end space-x-2 mt-6">
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit">Create Vendor</Button>
+        </div>
+      </form>
+    </div>
   )
 }
 
