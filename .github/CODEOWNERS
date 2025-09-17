@@ -1,0 +1,11 @@
+# Default owners
+* @optivoo2
+
+# Backend (Medusa)
+/src/** @optivoo2
+/medusa-config.ts @optivoo2
+
+# Storefront (Next.js)
+/storefront/** @optivoo2
+
+
