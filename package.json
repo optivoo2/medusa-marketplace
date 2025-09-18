@@ -17,7 +17,7 @@
     "seed": "medusa exec ./src/scripts/seed.ts",
     "seed:petrescue": "medusa exec ./src/scripts/seed-petrescue.ts",
     "prestart": "node scripts/pre-start.js",
-    "start": "npm run build && medusa start",
+    "start": "medusa start --host 0.0.0.0 --port $PORT",
     "dev": "medusa develop",
     "install:prod": "npm install --omit=dev --legacy-peer-deps",
     "migrate": "npx medusa db:migrate",
