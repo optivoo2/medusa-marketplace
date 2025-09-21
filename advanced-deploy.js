@@ -19,7 +19,7 @@ const CONFIG = {
     teamId: process.env.VERCEL_TEAM_ID || "arthurs-projects-129b2cca",
     projectName: "petrescue-brasil-storefront",
   },
-  
+
   // Deployment settings
   deployment: {
     target: "production",
@@ -27,13 +27,16 @@ const CONFIG = {
     installCommand: "npm ci",
     outputDirectory: ".next",
   },
-  
+
   // Environment variables
   env: {
-    NEXT_PUBLIC_MEDUSA_BACKEND_URL: "https://api.petrescue.org.br",
-    NEXT_PUBLIC_BASE_URL: "https://app.petrescue.org.br",
-    NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: "pk_live_petrescue_brasil",
+    NEXT_PUBLIC_MEDUSA_BACKEND_URL: "https://petrescue-brasil-production.up.railway.app",
+    MEDUSA_BACKEND_URL: "https://petrescue-brasil-production.up.railway.app",
+    NEXT_PUBLIC_BASE_URL: "https://storefront-h4yn8d0ac-arthurs-projects-129b2cca.vercel.app",
+    NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: "pk_cdfa13cc05867abb45cdbf9f5985057ee9a4d48a6117a7a9f556c0d064ac0af1",
     NEXT_PUBLIC_DEFAULT_REGION: "br",
+    NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: "petrescue",
+    NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: "petrescue_unsigned",
     REVALIDATE_SECRET: process.env.REVALIDATE_SECRET || "petrescue-brasil-revalidate-secret-32-chars",
   }
 };
@@ -47,7 +50,7 @@ class PetRescueDeployer {
 
   async deployStorefront() {
     console.log("🚀 Starting PetRescue Brasil Storefront Deployment...");
-    
+
     try {
       // Check if we have a bearer token
       if (!CONFIG.vercel.bearerToken) {
@@ -61,7 +64,7 @@ class PetRescueDeployer {
       });
 
       let project = projects.find(p => p.name === CONFIG.vercel.projectName);
-      
+
       if (!project) {
         console.log("📦 Creating new project...");
         project = await this.vercel.projects.createProject({
@@ -122,7 +125,7 @@ class PetRescueDeployer {
 
       console.log("🎉 Deployment completed successfully!");
       console.log(`🌐 Storefront URL: ${deployment.url}`);
-      
+
       return deployment;
 
     } catch (error) {
@@ -133,7 +136,7 @@ class PetRescueDeployer {
 
   async waitForDeployment(deploymentId, maxWaitTime = 300000) {
     const startTime = Date.now();
-    
+
     while (Date.now() - startTime < maxWaitTime) {
       try {
         const deployment = await this.vercel.deployments.getDeployment({
@@ -221,7 +224,7 @@ const mcpHandler = createMcpHandler(
           }
 
           const deployment = await deployer.deployStorefront();
-          
+
           return {
             content: [
               {
@@ -259,7 +262,7 @@ const mcpHandler = createMcpHandler(
           }
 
           const status = await deployer.getDeploymentStatus(deploymentId);
-          
+
           return {
             content: [
               {
@@ -296,11 +299,11 @@ const mcpHandler = createMcpHandler(
           }
 
           const deployments = await deployer.listDeployments();
-          
-          const deploymentList = deployments.map(d => 
+
+          const deploymentList = deployments.map(d =>
             `🆔 ${d.id}\n🔗 ${d.url}\n📈 ${d.state}\n⏰ ${new Date(d.createdAt).toISOString()}\n`
           ).join('\n');
-          
+
           return {
             content: [
               {
@@ -353,7 +356,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
           process.exit(1);
         });
       break;
-    
+
     case "status":
       const deploymentId = process.argv[3];
       if (!deploymentId) {
@@ -370,7 +373,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
           process.exit(1);
         });
       break;
-    
+
     case "list":
       deployer.listDeployments()
         .then(deployments => {
@@ -382,7 +385,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
           process.exit(1);
         });
       break;
-    
+
     default:
       console.log("Usage: node advanced-deploy.js [deploy|status|list]");
       console.log("  deploy - Deploy storefront to Vercel");
