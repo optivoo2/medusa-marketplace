@@ -5,11 +5,13 @@
   "installCommand": "npm ci --legacy-peer-deps || npm install --legacy-peer-deps",
   "devCommand": "npm run dev",
   "env": {
-    "NEXT_PUBLIC_MEDUSA_BACKEND_URL": "https://api.petrescue.org.br",
-    "MEDUSA_BACKEND_URL": "https://api.petrescue.org.br",
-    "NEXT_PUBLIC_BASE_URL": "https://app.petrescue.org.br",
-    "NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY": "pk_live_petrescue_brasil",
-    "NEXT_PUBLIC_DEFAULT_REGION": "br"
+    "NEXT_PUBLIC_MEDUSA_BACKEND_URL": "https://petrescue-brasil-production.up.railway.app",
+    "MEDUSA_BACKEND_URL": "https://petrescue-brasil-production.up.railway.app",
+    "NEXT_PUBLIC_BASE_URL": "https://storefront-h4yn8d0ac-arthurs-projects-129b2cca.vercel.app",
+    "NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY": "pk_cdfa13cc05867abb45cdbf9f5985057ee9a4d48a6117a7a9f556c0d064ac0af1",
+    "NEXT_PUBLIC_DEFAULT_REGION": "br",
+    "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME": "petrescue",
+    "NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET": "petrescue_unsigned"
   },
   "headers": [
     {
@@ -28,13 +30,6 @@
           "value": "1; mode=block"
         }
       ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/admin",
-      "destination": "https://admin.petrescue.org.br",
-      "permanent": true
     }
   ]
 }
